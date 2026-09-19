@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval';" />
   <title>Document Helper — Setu AI</title>
   <meta name="description" content="Paste any confusing document — bank notice, government form, legal letter — and Setu AI explains it in simple Hindi or English with clear action steps." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -10,265 +11,60 @@
   <link rel="stylesheet" href="css/style.css" />
   <style>
     .doc-page { padding: 88px 2rem 60px; max-width: 1100px; margin: 0 auto; }
-
     .doc-hero { text-align: center; margin-bottom: 2.5rem; }
-
-    /* Doc type selector */
-    .doc-type-row {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 2rem;
-    }
-    .doc-type-chip {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 18px;
-      border-radius: 100px;
-      border: 1px solid var(--border);
-      background: none;
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      font-weight: 500;
-      font-family: inherit;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .doc-type-chip:hover, .doc-type-chip.active {
-      border-color: var(--indigo);
-      background: rgba(91,94,244,0.1);
-      color: var(--text-primary);
-    }
-
-    /* Main layout */
-    .doc-main {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
+    .doc-type-row { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; }
+    .doc-type-chip { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 100px; border: 1px solid var(--border); background: none; color: var(--text-secondary); font-size: 0.85rem; font-weight: 500; font-family: inherit; cursor: pointer; transition: var(--transition); }
+    .doc-type-chip:hover, .doc-type-chip.active { border-color: var(--indigo); background: rgba(91,94,244,0.1); color: var(--text-primary); }
+    .doc-main { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
     @media(max-width:900px){ .doc-main{ grid-template-columns:1fr; } }
-
-    .doc-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 1.75rem;
-    }
-
-    .doc-card-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 9px;
-    }
-
-    #docInput {
-      width: 100%;
-      background: var(--bg-glass);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      color: var(--text-primary);
-      font-family: inherit;
-      font-size: 0.9rem;
-      line-height: 1.7;
-      resize: vertical;
-      min-height: 280px;
-      outline: none;
-      transition: var(--transition);
-    }
+    .doc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 1.75rem; }
+    .doc-card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 9px; }
+    #docInput { width: 100%; background: var(--bg-glass); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; color: var(--text-primary); font-family: inherit; font-size: 0.9rem; line-height: 1.7; resize: vertical; min-height: 280px; outline: none; transition: var(--transition); }
     #docInput:focus { border-color: var(--border-glow); box-shadow: 0 0 0 3px rgba(91,94,244,0.08); }
     #docInput::placeholder { color: var(--text-muted); }
-
-    .char-count {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-align: right;
-      margin-top: 6px;
-      margin-bottom: 1rem;
-    }
-
-    .lang-toggle {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 1rem;
-    }
-    .lang-btn {
-      flex: 1;
-      padding: 8px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: none;
-      color: var(--text-muted);
-      font-family: inherit;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      text-align: center;
-    }
-    .lang-btn.active {
-      background: var(--indigo);
-      border-color: var(--indigo);
-      color: #fff;
-    }
-
-    /* Output area */
-    .doc-output-area {
-      min-height: 280px;
-      background: rgba(91,94,244,0.04);
-      border: 1px solid rgba(91,94,244,0.12);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
-      font-size: 0.9rem;
-      line-height: 1.75;
-      color: var(--text-secondary);
-      position: relative;
-      overflow: hidden;
-    }
-    .doc-output-area.loading::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(91,94,244,0.07) 50%, transparent 100%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s ease infinite;
-    }
+    .char-count { font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-top: 6px; margin-bottom: 1rem; }
+    .lang-toggle { display: flex; gap: 6px; margin-bottom: 1rem; }
+    .lang-btn { flex: 1; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; color: var(--text-muted); font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: var(--transition); text-align: center; }
+    .lang-btn.active { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+    .doc-output-area { min-height: 280px; background: rgba(91,94,244,0.04); border: 1px solid rgba(91,94,244,0.12); border-radius: var(--radius-md); padding: 1.25rem; font-size: 0.9rem; line-height: 1.75; color: var(--text-secondary); position: relative; overflow: hidden; }
+    .doc-output-area.loading::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(91,94,244,0.07) 50%, transparent 100%); background-size: 200% 100%; animation: shimmer 1.4s ease infinite; }
     @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-
-    .output-placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      min-height: 240px;
-      text-align: center;
-      gap: 1rem;
-      color: var(--text-muted);
-    }
+    .output-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 240px; text-align: center; gap: 1rem; color: var(--text-muted); }
     .output-placeholder-icon { font-size: 2.5rem; }
     .output-placeholder-text { font-size: 0.88rem; line-height: 1.6; }
-
-    /* Result sections */
     .result-section { margin-bottom: 1.25rem; }
-    .result-section-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .result-section-body {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      line-height: 1.75;
-    }
+    .result-section-title { font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px; }
+    .result-section-body { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.75; }
     .result-section-body ul { padding-left: 1.2rem; margin-top: 0.25rem; }
     .result-section-body li { margin-bottom: 0.3rem; }
-
-    .action-box {
-      background: rgba(255,123,0,0.08);
-      border: 1px solid rgba(255,123,0,0.22);
-      border-radius: var(--radius-md);
-      padding: 14px 18px;
-      font-size: 0.88rem;
-      color: var(--saffron-light);
-      line-height: 1.65;
-    }
+    .action-box { background: rgba(255,123,0,0.08); border: 1px solid rgba(255,123,0,0.22); border-radius: var(--radius-md); padding: 14px 18px; font-size: 0.88rem; color: var(--saffron-light); line-height: 1.65; }
     .action-box strong { color: var(--saffron); }
-
-    .deadline-box {
-      background: rgba(255,78,122,0.07);
-      border: 1px solid rgba(255,78,122,0.22);
-      border-radius: var(--radius-md);
-      padding: 12px 16px;
-      font-size: 0.85rem;
-      color: var(--rose);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    .deadline-box { background: rgba(255,78,122,0.07); border: 1px solid rgba(255,78,122,0.22); border-radius: var(--radius-md); padding: 12px 16px; font-size: 0.85rem; color: var(--rose); display: flex; align-items: center; gap: 8px; }
     .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-    .result-tag {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 100px;
-      background: rgba(91,94,244,0.12);
-      color: var(--indigo-light);
-      border: 1px solid rgba(91,94,244,0.2);
-    }
-
-    /* Quick examples */
+    .result-tag { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 100px; background: rgba(91,94,244,0.12); color: var(--indigo-light); border: 1px solid rgba(91,94,244,0.2); }
     .examples-section { margin-top: 2.5rem; }
-    .examples-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .example-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+    .examples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .example-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; cursor: pointer; transition: var(--transition); }
     .example-card:hover { border-color: var(--border-glow); transform: translateY(-2px); }
     .example-card-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
     .example-card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem; }
-    .example-card-snippet {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-      font-style: italic;
-    }
-
-    /* Bottom toolbar */
-    .doc-actions {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    /* Tips sidebar */
-    .doc-tips {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 1.5rem;
-      margin-top: 1.5rem;
-    }
+    .example-card-snippet { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; font-style: italic; }
+    .doc-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .doc-tips { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 1.5rem; margin-top: 1.5rem; }
     .tips-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; }
-    .tip-item {
-      display: flex;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
+    .tip-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; }
     .tip-item:last-child { border-bottom: none; }
     .tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
   </style>
 </head>
 <body>
 
-  <nav class="navbar" id="navbar">
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link" style="position:absolute;top:-40px;left:10px;background:var(--indigo);color:#fff;padding:8px 16px;z-index:9999;transition:top 0.2s;" onfocus="this.style.top='10px'" onblur="this.style.top='-40px'">Skip to main content</a>
+
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main Navigation">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
+      <a href="index.html" class="nav-logo" aria-label="Setu AI Homepage">
         <span class="logo-icon">◈</span>
         <span class="logo-text">Setu <span class="logo-ai">AI</span></span>
       </a>
@@ -283,7 +79,7 @@
     </div>
   </nav>
 
-  <div class="doc-page">
+  <main id="main-content" class="doc-page" role="main">
 
     <!-- Header -->
     <div class="doc-hero">
@@ -301,7 +97,7 @@
     </div>
 
     <!-- Document Type Filter -->
-    <div class="doc-type-row">
+    <div class="doc-type-row" role="region" aria-label="Document Type Filter">
       <button class="doc-type-chip active" data-type="auto" id="typeAuto">🔍 Auto-detect</button>
       <button class="doc-type-chip" data-type="bank" id="typeBank">🏦 Bank Notice</button>
       <button class="doc-type-chip" data-type="govt" id="typeGovt">🏛️ Government Letter</button>
@@ -322,7 +118,7 @@
           <button class="lang-btn" data-lang="hindi" id="langHi">🇮🇳 Hindi में समझाइए</button>
         </div>
 
-        <textarea id="docInput" placeholder="Paste any text from a document here...
+        <textarea id="docInput" aria-label="Document Input Text" placeholder="Paste any text from a document here...
 
 Examples:
 • 'Dear customer, your account has been marked for KYC non-compliance...'
@@ -348,7 +144,7 @@ Tip: You can paste Hindi or English text."></textarea>
       <div class="doc-card">
         <div class="doc-card-title">💡 Setu's Explanation</div>
 
-        <div class="doc-output-area" id="docOutput">
+        <div class="doc-output-area" id="docOutput" role="region" aria-live="polite">
           <div class="output-placeholder" id="outputPlaceholder">
             <div class="output-placeholder-icon">📄</div>
             <div class="output-placeholder-text">
@@ -380,9 +176,9 @@ Tip: You can paste Hindi or English text."></textarea>
       <div class="tip-item"><span class="tip-icon">💬</span>After analysing, you can continue the conversation in <a href="chat.html" style="color:var(--indigo-light);">Setu Chat</a> for more details.</div>
     </div>
 
-  </div>
+  </main>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="footer-inner">
       <div class="footer-logo"><span class="logo-icon">◈</span><span class="logo-text">Setu <span class="logo-ai">AI</span></span></div>
       <p class="footer-tagline">Made with ❤️ for Bharat</p>
@@ -390,6 +186,8 @@ Tip: You can paste Hindi or English text."></textarea>
     </div>
   </footer>
 
+  <script src="js/utils.js"></script>
+  <script src="js/security.js"></script>
   <script src="js/document.js"></script>
 </body>
 </html>

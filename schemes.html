@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval';" />
   <title>Government Schemes Finder — Setu AI</title>
   <meta name="description" content="Find government schemes you qualify for — PM Kisan, Mudra Loan, NMMS Scholarship, Ayushman Bharat, and 50+ more. Powered by Setu AI." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -10,9 +11,12 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <nav class="navbar" id="navbar">
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link" style="position:absolute;top:-40px;left:10px;background:var(--indigo);color:#fff;padding:8px 16px;z-index:9999;transition:top 0.2s;" onfocus="this.style.top='10px'" onblur="this.style.top='-40px'">Skip to main content</a>
+
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main Navigation">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo"><span class="logo-icon">◈</span><span class="logo-text">Setu <span class="logo-ai">AI</span></span></a>
+      <a href="index.html" class="nav-logo" aria-label="Setu AI Homepage"><span class="logo-icon">◈</span><span class="logo-text">Setu <span class="logo-ai">AI</span></span></a>
       <ul class="nav-links">
         <li><a href="video.html" class="nav-link" style="color:var(--saffron);font-weight:600;">Video Tour 🎬</a></li>
         <li><a href="schemes.html" class="nav-link" style="color:var(--indigo-light)">Schemes</a></li>
@@ -24,7 +28,7 @@
     </div>
   </nav>
 
-  <div class="page-layout">
+  <main id="main-content" class="page-layout" role="main">
     <div class="page-hero">
       <div class="section-label">AI-Powered Finder</div>
       <h1 class="page-title">Find schemes <span style="color:var(--saffron)">you actually qualify for</span></h1>
@@ -32,7 +36,7 @@
     </div>
 
     <!-- Quiz Card -->
-    <div class="quiz-card" id="quizCard">
+    <div class="quiz-card" id="quizCard" role="region" aria-label="Eligibility Quiz">
       <div class="quiz-progress" id="quizProgress">
         <div class="quiz-step-dot active" id="dot0"></div>
         <div class="quiz-step-dot" id="dot1"></div>
@@ -41,13 +45,13 @@
         <div class="quiz-step-dot" id="dot4"></div>
       </div>
 
-      <div id="quizBody">
+      <div id="quizBody" aria-live="polite">
         <!-- Rendered by JS -->
       </div>
     </div>
 
     <!-- Results -->
-    <div id="schemesResults" style="display:none;">
+    <div id="schemesResults" style="display:none;" role="region" aria-live="polite">
       <div style="text-align:center;margin-bottom:2rem;">
         <div class="section-label">Your Matches</div>
         <h2 class="section-title" id="resultsTitle">Loading your schemes...</h2>
@@ -58,7 +62,7 @@
     </div>
 
     <!-- Browse All Schemes -->
-    <div id="allSchemesSection" style="margin-top:4rem;">
+    <div id="allSchemesSection" style="margin-top:4rem;" role="region" aria-label="Browse All Schemes">
       <div class="section-label">Browse All</div>
       <h2 class="section-title">All 50+ Schemes <span style="font-size:1rem;font-weight:400;color:var(--text-muted);">— tap to learn more</span></h2>
       <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:2rem;justify-content:center;" id="categoryFilter">
@@ -71,9 +75,9 @@
       </div>
       <div class="schemes-grid" id="allSchemesGrid"></div>
     </div>
-  </div>
+  </main>
 
-  <footer class="footer">
+  <footer class="footer" role="contentinfo">
     <div class="footer-inner">
       <div class="footer-logo"><span class="logo-icon">◈</span><span class="logo-text">Setu <span class="logo-ai">AI</span></span></div>
       <p class="footer-tagline">Made with ❤️ for Bharat</p>
@@ -81,6 +85,8 @@
     </div>
   </footer>
 
+  <script src="js/utils.js"></script>
+  <script src="js/security.js"></script>
   <script src="js/schemes.js"></script>
 </body>
 </html>

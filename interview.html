@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Prep — Setu AI</title>
+  <meta name="description" content="Practice real HR and technical interview questions with instant AI feedback. Build confidence in Hindi or English — from IT to government jobs. Powered by Setu AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ---- Interview-page specific styles ---- */
+    .interview-page { padding: 88px 2rem 60px; max-width: 1100px; margin: 0 auto; }
+    .interview-header { text-align: center; margin-bottom: 2.5rem; }
+
+    .track-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .track-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 16px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .track-btn:hover, .track-btn.active {
+      border-color: var(--indigo);
+      background: rgba(91,94,244,0.1);
+      color: var(--text-primary);
+    }
+    .track-btn span.t-icon { font-size: 1.6rem; }
+
+    .interview-arena {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media(max-width:900px){ .interview-arena{ grid-template-columns:1fr; } }
+
+    .arena-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+    }
+
+    .q-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--indigo-light);
+      margin-bottom: 0.5rem;
+    }
+    .q-number {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .q-text {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.55;
+      color: var(--text-primary);
+      background: linear-gradient(135deg,rgba(91,94,244,0.08),rgba(255,123,0,0.05));
+      border: 1px solid rgba(91,94,244,0.2);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+    }
+    .q-tip {
+      background: rgba(0,214,160,0.06);
+      border: 1px solid rgba(0,214,160,0.18);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 0.83rem;
+      color: var(--emerald);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+    .q-tip strong { color: var(--emerald); }
+
+    .q-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+    .answer-panel {}
+    .answer-panel label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+    #answerBox {
+      width: 100%;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      resize: vertical;
+      min-height: 150px;
+      outline: none;
+      transition: var(--transition);
+      margin-bottom: 1rem;
+    }
+    #answerBox:focus { border-color: var(--border-glow); box-shadow: 0 0 0 3px rgba(91,94,244,0.08); }
+    #answerBox::placeholder { color: var(--text-muted); }
+
+    /* Feedback */
+    .feedback-card {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      margin-top: 1.5rem;
+      animation: fadeInDown 0.4s ease both;
+    }
+    .feedback-card.show { display: block; }
+
+    .score-row {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .score-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 20px;
+      flex: 1;
+      min-width: 90px;
+    }
+    .score-chip-val { font-size: 1.5rem; font-weight: 800; color: var(--indigo-light); }
+    .score-chip-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    .feedback-bar-wrap { margin-bottom: 0.4rem; }
+    .feedback-bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; }
+    .score-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .score-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg,var(--emerald),var(--indigo)); width: 0; transition: width 1.2s ease; }
+
+    .fb-section { margin-top: 1.25rem; }
+    .fb-section-title { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 6px; }
+    .fb-section-body { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.7; }
+    .fb-improved {
+      background: rgba(91,94,244,0.06);
+      border: 1px solid rgba(91,94,244,0.18);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      font-size: 0.86rem;
+      color: var(--text-primary);
+      line-height: 1.65;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+
+    /* Progress tracker */
+    .progress-tracker {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .progress-stat { display: flex; flex-direction: column; }
+    .progress-stat-val { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); }
+    .progress-stat-label { font-size: 0.75rem; color: var(--text-muted); }
+    .progress-bar-outer { flex: 1; min-width: 160px; }
+    .progress-bar-outer label { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 5px; display: block; }
+    .progress-bar-bg { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--saffron), var(--indigo)); transition: width 0.8s ease; }
+
+    /* Pill tabs */
+    .pill-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .pill-tab {
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+    .pill-tab.active {
+      background: var(--indigo);
+      border-color: var(--indigo);
+      color: #fff;
+    }
+
+    /* Voice recording indicator */
+    .voice-indicator {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      color: var(--rose);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .voice-indicator.show { display: flex; }
+    .voice-wave { display: flex; gap: 3px; align-items: center; }
+    .voice-wave span {
+      display: block; width: 3px; border-radius: 2px;
+      background: var(--rose);
+      animation: wave 0.8s ease-in-out infinite;
+    }
+    .voice-wave span:nth-child(1){ height:8px; }
+    .voice-wave span:nth-child(2){ height:16px; animation-delay:0.1s; }
+    .voice-wave span:nth-child(3){ height:12px; animation-delay:0.2s; }
+    .voice-wave span:nth-child(4){ height:20px; animation-delay:0.3s; }
+    .voice-wave span:nth-child(5){ height:10px; animation-delay:0.4s; }
+    @keyframes wave { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(0.4)} }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">Setu <span class="logo-ai">AI</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="video.html" class="nav-link" style="color:var(--saffron);font-weight:600;">Video Tour 🎬</a></li>
+        <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+        <li><a href="interview.html" class="nav-link" style="color:var(--indigo-light)">Interview Prep</a></li>
+        <li><a href="document.html" class="nav-link">Documents</a></li>
+        <li><a href="legal.html" class="nav-link" style="color:var(--saffron-light);">Legal Assistant ✨</a></li>
+        <li><a href="chat.html" class="nav-link nav-cta">Ask Setu →</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="interview-page">
+
+    <!-- Header -->
+    <div class="interview-header">
+      <div class="section-label">AI-Powered Practice</div>
+      <h1 class="page-title">Ace your next <span style="color:var(--saffron)">interview</span></h1>
+      <p class="page-subtitle">Practice real questions, get instant AI feedback, build confidence — in Hindi or English. From IT to government jobs.</p>
+    </div>
+
+    <!-- Progress Tracker -->
+    <div class="progress-tracker" id="progressTracker">
+      <div class="progress-stat">
+        <span class="progress-stat-val" id="statAnswered">0</span>
+        <span class="progress-stat-label">Questions Answered</span>
+      </div>
+      <div class="progress-stat">
+        <span class="progress-stat-val" id="statAvgScore">—</span>
+        <span class="progress-stat-label">Avg. Score</span>
+      </div>
+      <div class="progress-stat">
+        <span class="progress-stat-val" id="statStreak">0🔥</span>
+        <span class="progress-stat-label">Streak (80%+)</span>
+      </div>
+      <div class="progress-bar-outer">
+        <label>Session Progress</label>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="sessionBar" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Job Track Selection -->
+    <div class="arena-panel" style="margin-bottom:1.5rem;">
+      <div class="panel-title" style="font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:10px;">
+        🎯 Choose your interview track
+      </div>
+      <div class="track-grid" id="trackGrid">
+        <button class="track-btn active" data-track="hr" id="trackHR">
+          <span class="t-icon">🤝</span>HR / Behavioural
+        </button>
+        <button class="track-btn" data-track="it" id="trackIT">
+          <span class="t-icon">💻</span>IT / Tech
+        </button>
+        <button class="track-btn" data-track="govt" id="trackGovt">
+          <span class="t-icon">🏛️</span>Government Jobs
+        </button>
+        <button class="track-btn" data-track="sales" id="trackSales">
+          <span class="t-icon">📈</span>Sales / Marketing
+        </button>
+        <button class="track-btn" data-track="banking" id="trackBanking">
+          <span class="t-icon">🏦</span>Banking / Finance
+        </button>
+        <button class="track-btn" data-track="fresher" id="trackFresher">
+          <span class="t-icon">🎓</span>Fresher / Campus
+        </button>
+      </div>
+
+      <!-- Difficulty -->
+      <div style="margin-top:0.5rem;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">Difficulty</div>
+        <div class="pill-tabs" id="diffTabs">
+          <button class="pill-tab active" data-diff="easy" id="diffEasy">Easy</button>
+          <button class="pill-tab" data-diff="medium" id="diffMedium">Medium</button>
+          <button class="pill-tab" data-diff="hard" id="diffHard">Hard</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Arena -->
+    <div class="interview-arena">
+
+      <!-- Question Panel -->
+      <div class="arena-panel">
+        <div class="q-label">Current Question</div>
+        <div class="q-number" id="qNumber">Question 1 of 10</div>
+
+        <div class="q-text" id="qText">
+          Loading your first question...
+        </div>
+
+        <div class="q-tip" id="qTip">
+          💡 <strong>Tip:</strong> Loading tip...
+        </div>
+
+        <div class="q-actions">
+          <button class="btn btn-ghost" id="nextQBtn" style="padding:10px 20px;font-size:0.88rem;">
+            Skip → Next
+          </button>
+          <button class="btn btn-ghost" id="hindiToggleBtn" style="padding:10px 20px;font-size:0.88rem;">
+            🇮🇳 Hindi Version
+          </button>
+          <button class="btn btn-ghost" id="voiceAnswerBtn" style="padding:10px 20px;font-size:0.88rem;">
+            🎙️ Voice Answer
+          </button>
+        </div>
+      </div>
+
+      <!-- Answer Panel -->
+      <div class="arena-panel answer-panel">
+        <div class="voice-indicator" id="voiceIndicator">
+          <div class="voice-wave">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          Recording... click 🎙️ again to stop
+        </div>
+
+        <label for="answerBox">Your Answer</label>
+        <textarea id="answerBox" placeholder="Type your answer here in Hindi, English, or Hinglish…&#10;&#10;Tip: Structure your answer clearly. Use examples from real life. 2-3 minutes is a good length."></textarea>
+
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="submitAnswerBtn" style="flex:1;justify-content:center;">
+            Get AI Feedback
+          </button>
+          <button class="btn btn-ghost" id="clearAnswerBtn" style="padding:14px 18px;">
+            Clear
+          </button>
+        </div>
+
+        <div style="margin-top:1rem;font-size:0.78rem;color:var(--text-muted);text-align:center;">
+          Your answers are never stored or shared.
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback Card -->
+    <div class="feedback-card" id="feedbackCard">
+      <div style="font-size:1rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;">
+        ✅ AI Feedback
+        <span id="overallBadge" style="margin-left:auto;font-size:0.82rem;padding:4px 12px;border-radius:100px;background:rgba(0,214,160,0.12);color:var(--emerald);border:1px solid rgba(0,214,160,0.25);">Score: —</span>
+      </div>
+
+      <div class="score-row">
+        <div class="score-chip">
+          <span class="score-chip-val" id="scoreContent">—</span>
+          <span class="score-chip-label">Content</span>
+        </div>
+        <div class="score-chip">
+          <span class="score-chip-val" id="scoreClarity">—</span>
+          <span class="score-chip-label">Clarity</span>
+        </div>
+        <div class="score-chip">
+          <span class="score-chip-val" id="scoreConfidence">—</span>
+          <span class="score-chip-label">Confidence</span>
+        </div>
+        <div class="score-chip">
+          <span class="score-chip-val" id="scoreStructure">—</span>
+          <span class="score-chip-label">Structure</span>
+        </div>
+      </div>
+
+      <div class="feedback-bar-wrap">
+        <div class="feedback-bar-label"><span>Overall</span><span id="barPct">0%</span></div>
+        <div class="score-bar"><div class="score-fill" id="overallBar"></div></div>
+      </div>
+
+      <div class="fb-section">
+        <div class="fb-section-title">💪 What worked well</div>
+        <div class="fb-section-body" id="fbGood">—</div>
+      </div>
+      <div class="fb-section">
+        <div class="fb-section-title">🔧 How to improve</div>
+        <div class="fb-section-body" id="fbImprove">—</div>
+      </div>
+      <div class="fb-section">
+        <div class="fb-section-title">✨ A stronger version</div>
+        <div class="fb-improved" id="fbBetter">—</div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="nextAfterFeedbackBtn" style="flex:1;justify-content:center;">
+          Next Question →
+        </button>
+        <button class="btn btn-ghost" id="retryBtn" style="padding:14px 18px;">
+          Retry This
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /interview-page -->
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo"><span class="logo-icon">◈</span><span class="logo-text">Setu <span class="logo-ai">AI</span></span></div>
+      <p class="footer-tagline">Made with ❤️ for Bharat</p>
+      <p class="footer-copy">© 2026 Setu AI · Practice makes perfect.</p>
+    </div>
+  </footer>
+
+  <script src="js/interview.js"></script>
+</body>
+</html>

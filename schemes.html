@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Government Schemes Finder — Setu AI</title>
+  <meta name="description" content="Find government schemes you qualify for — PM Kisan, Mudra Loan, NMMS Scholarship, Ayushman Bharat, and 50+ more. Powered by Setu AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="logo-icon">◈</span><span class="logo-text">Setu <span class="logo-ai">AI</span></span></a>
+      <ul class="nav-links">
+        <li><a href="video.html" class="nav-link" style="color:var(--saffron);font-weight:600;">Video Tour 🎬</a></li>
+        <li><a href="schemes.html" class="nav-link" style="color:var(--indigo-light)">Schemes</a></li>
+        <li><a href="interview.html" class="nav-link">Interview Prep</a></li>
+        <li><a href="document.html" class="nav-link">Documents</a></li>
+        <li><a href="legal.html" class="nav-link" style="color:var(--saffron-light);">Legal Assistant ✨</a></li>
+        <li><a href="chat.html" class="nav-link nav-cta">Ask Setu →</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-layout">
+    <div class="page-hero">
+      <div class="section-label">AI-Powered Finder</div>
+      <h1 class="page-title">Find schemes <span style="color:var(--saffron)">you actually qualify for</span></h1>
+      <p class="page-subtitle">Answer 5 quick questions. Setu AI matches you with real government schemes — scholarships, loans, subsidies, health coverage, and more.</p>
+    </div>
+
+    <!-- Quiz Card -->
+    <div class="quiz-card" id="quizCard">
+      <div class="quiz-progress" id="quizProgress">
+        <div class="quiz-step-dot active" id="dot0"></div>
+        <div class="quiz-step-dot" id="dot1"></div>
+        <div class="quiz-step-dot" id="dot2"></div>
+        <div class="quiz-step-dot" id="dot3"></div>
+        <div class="quiz-step-dot" id="dot4"></div>
+      </div>
+
+      <div id="quizBody">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="schemesResults" style="display:none;">
+      <div style="text-align:center;margin-bottom:2rem;">
+        <div class="section-label">Your Matches</div>
+        <h2 class="section-title" id="resultsTitle">Loading your schemes...</h2>
+        <p style="color:var(--text-secondary);margin-bottom:1.5rem;">Based on your profile, here are the best government schemes for you.</p>
+        <button class="btn btn-ghost" id="retakeQuizBtn" style="margin:0 auto;">← Retake Quiz</button>
+      </div>
+      <div class="schemes-grid" id="schemesGrid"></div>
+    </div>
+
+    <!-- Browse All Schemes -->
+    <div id="allSchemesSection" style="margin-top:4rem;">
+      <div class="section-label">Browse All</div>
+      <h2 class="section-title">All 50+ Schemes <span style="font-size:1rem;font-weight:400;color:var(--text-muted);">— tap to learn more</span></h2>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:2rem;justify-content:center;" id="categoryFilter">
+        <button class="btn btn-ghost" style="padding:8px 18px;font-size:0.85rem;" data-cat="all" id="catAll">All</button>
+        <button class="btn btn-ghost" style="padding:8px 18px;font-size:0.85rem;" data-cat="Education" id="catEdu">🎓 Education</button>
+        <button class="btn btn-ghost" style="padding:8px 18px;font-size:0.85rem;" data-cat="Business" id="catBiz">💼 Business</button>
+        <button class="btn btn-ghost" style="padding:8px 18px;font-size:0.85rem;" data-cat="Agriculture" id="catAgri">🌾 Agriculture</button>
+        <button class="btn btn-ghost" style="padding:8px 18px;font-size:0.85rem;" data-cat="Health" id="catHealth">🏥 Health</button>
+        <button class="btn btn-ghost" style="padding:8px 18px;font-size:0.85rem;" data-cat="Women" id="catWomen">👩 Women</button>
+      </div>
+      <div class="schemes-grid" id="allSchemesGrid"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo"><span class="logo-icon">◈</span><span class="logo-text">Setu <span class="logo-ai">AI</span></span></div>
+      <p class="footer-tagline">Made with ❤️ for Bharat</p>
+      <p class="footer-copy">© 2026 Setu AI · Scheme information is for guidance only. Always verify at official govt. portals.</p>
+    </div>
+  </footer>
+
+  <script src="js/schemes.js"></script>
+</body>
+</html>

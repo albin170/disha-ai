@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setu AI Chat — Ask Anything</title>
+  <meta name="description" content="Chat with Setu AI in Hindi, English or Hinglish. Get help with government schemes, interview prep, document understanding and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">Setu <span class="logo-ai">AI</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="video.html" class="nav-link" style="color:var(--saffron);font-weight:600;">Video Tour 🎬</a></li>
+        <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+        <li><a href="interview.html" class="nav-link">Interview Prep</a></li>
+        <li><a href="document.html" class="nav-link">Documents</a></li>
+        <li><a href="legal.html" class="nav-link" style="color:var(--saffron-light);">Legal Assistant ✨</a></li>
+        <li><a href="chat.html" class="nav-link nav-cta">Chat</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="chat-page-layout">
+    <!-- Sidebar -->
+    <aside class="chat-sidebar">
+      <div class="sidebar-title">Quick Modes</div>
+      <div class="sidebar-item active" data-mode="general" id="modeGeneral">
+        <span class="sidebar-item-icon">💬</span> General Help
+      </div>
+      <div class="sidebar-item" data-mode="legal" id="modeLegal" onclick="window.location.href='legal.html'">
+        <span class="sidebar-item-icon">⚖️</span> Legal Assistant
+      </div>
+      <div class="sidebar-item" data-mode="schemes" id="modeSchemes">
+        <span class="sidebar-item-icon">🏛️</span> Find Schemes
+      </div>
+      <div class="sidebar-item" data-mode="interview" id="modeInterview">
+        <span class="sidebar-item-icon">🎯</span> Interview Prep
+      </div>
+      <div class="sidebar-item" data-mode="document" id="modeDocument">
+        <span class="sidebar-item-icon">📄</span> Explain Document
+      </div>
+      <div class="sidebar-item" data-mode="career" id="modeCareer">
+        <span class="sidebar-item-icon">🚀</span> Career Advice
+      </div>
+      <div class="sidebar-item" data-mode="budgeting" id="modeBudgeting">
+        <span class="sidebar-item-icon">💰</span> Budgeting Tips
+      </div>
+      <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border);">
+        <div class="sidebar-title" style="margin-bottom: 0.75rem;">Recent Chats</div>
+        <div class="sidebar-item" id="recentChat1"><span class="sidebar-item-icon">🕐</span> Scholarship search</div>
+        <div class="sidebar-item" id="recentChat2"><span class="sidebar-item-icon">🕐</span> IT interview prep</div>
+      </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="chat-main">
+      <div class="chat-main-header">
+        <div class="chat-avatar" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff7b00,#5b5ef4);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">◈</div>
+        <div>
+          <div style="font-weight:700;font-size:0.95rem;">Setu AI</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:5px;">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--emerald);box-shadow:0 0 6px var(--emerald);display:inline-block;animation:pulse 2s infinite;"></span>
+            Ready to help
+          </div>
+        </div>
+        <div class="chat-mode-badge" id="modeBadge">General</div>
+      </div>
+
+      <div class="chat-messages-area" id="chatMessagesArea">
+        <!-- Welcome message -->
+        <div class="msg-wrapper">
+          <div class="msg-avatar msg-avatar-ai">◈</div>
+          <div>
+            <div class="msg-bubble msg-bubble-ai">
+              Namaste! 🙏 I'm <strong>Setu</strong> — your AI guide for everyday life in India.<br/><br/>
+              I can help you with:<br/>
+              🏛️ <strong>Government schemes</strong> you may not know about<br/>
+              🎯 <strong>Interview practice</strong> in Hindi or English<br/>
+              📄 <strong>Understanding confusing documents</strong><br/>
+              🚀 <strong>Career & skill guidance</strong><br/><br/>
+              <em>Ask me anything — in Hindi, English, or both!</em>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="chat-quick-prompts">
+          <button class="quick-prompt-btn" data-prompt="Which government schemes am I eligible for?" id="qp1">🏛️ Find my schemes</button>
+          <button class="quick-prompt-btn" data-prompt="Give me a mock HR interview question" id="qp2">🎯 Interview practice</button>
+          <button class="quick-prompt-btn" data-prompt="Explain this document in simple words" id="qp3">📄 Explain document</button>
+          <button class="quick-prompt-btn" data-prompt="What career should I choose after 12th?" id="qp4">🚀 Career guidance</button>
+        </div>
+        <div class="chat-input-wrapper" style="margin-top:10px;">
+          <textarea id="chatInput" placeholder="Type your question in Hindi, English, or Hinglish…" rows="1"></textarea>
+          <div class="chat-toolbar">
+            <button class="toolbar-btn" title="Voice input" id="voiceBtn">🎙️</button>
+            <button class="send-btn" id="sendBtn" aria-label="Send message">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/chat.js"></script>
+</body>
+</html>

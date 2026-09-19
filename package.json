@@ -1,0 +1,11 @@
+{
+  "name": "disha-ai-legal",
+  "version": "1.0.0",
+  "description": "GenAI-Powered Legal Information and Assistance Platform with Privacy, Security, & Testing Suite",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "author": "Setu AI Team",
+  "license": "MIT"
+}

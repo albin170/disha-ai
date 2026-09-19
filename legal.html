@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal AI Assistant — Setu AI</title>
+  <meta name="description" content="Understand, compare, and navigate legal documents safely with GenAI. Clause simplification, side-by-side contract comparison, risk scanning, and lawyer consultation briefs." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .legal-page { padding: 88px 2rem 60px; max-width: 1200px; margin: 0 auto; }
+    .legal-hero { text-align: center; margin-bottom: 2rem; }
+    .sample-chip-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+    .sample-chip {
+      padding: 6px 14px; border-radius: 100px; border: 1px solid var(--border);
+      background: var(--bg-glass); font-size: 0.8rem; font-weight: 500; cursor: pointer;
+      color: var(--text-secondary); transition: var(--transition);
+    }
+    .sample-chip:hover { border-color: var(--indigo); color: var(--text-primary); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">Setu <span class="logo-ai">AI Legal</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="video.html" class="nav-link" style="color:var(--saffron);font-weight:600;">Video Tour 🎬</a></li>
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="schemes.html" class="nav-link">Schemes</a></li>
+        <li><a href="interview.html" class="nav-link">Interview Prep</a></li>
+        <li><a href="document.html" class="nav-link">Document Helper</a></li>
+        <li><a href="legal.html" class="nav-link" style="color:var(--indigo-light);font-weight:700;">Legal Assistant <span class="legal-badge">NEW</span></a></li>
+        <li><a href="chat.html" class="nav-link nav-cta">Ask Setu →</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="legal-page">
+
+    <!-- Hero Header -->
+    <div class="legal-hero">
+      <div class="section-label">GenAI Legal Information & Assistance</div>
+      <h1 class="page-title">Navigate legal documents with <span style="color:var(--saffron)">confidence</span></h1>
+      <p class="page-subtitle">Simplify complex contracts, compare agreements side-by-side, detect hidden risks, and prepare structured briefs for your legal counsel — safely & privately.</p>
+
+      <div class="sample-chip-group">
+        <span style="font-size:0.8rem;color:var(--text-muted);align-self:center;">Try Sample Document:</span>
+        <button class="sample-chip" onclick="loadSampleContract('rent_standard')">🏠 Standard Rent Agreement</button>
+        <button class="sample-chip" onclick="loadSampleContract('rent_risky')">⚠️ Risky Lease Terms</button>
+        <button class="sample-chip" onclick="loadSampleContract('employment_nda')">💼 Employment & NDA</button>
+        <button class="sample-chip" onclick="loadSampleContract('freelance_contract')">📝 Freelancer Agreement</button>
+      </div>
+    </div>
+
+    <!-- PII Privacy & Safety Controls -->
+    <div class="pii-banner">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:1.4rem;">🔒</span>
+        <div>
+          <div style="font-weight:700;color:var(--emerald);">Client-Side PII Masking & Privacy Shield Active</div>
+          <div style="font-size:0.78rem;color:var(--text-secondary);" id="piiStatusText">Automatically masks names, PAN, Aadhaar, cards & phone numbers before AI processing.</div>
+        </div>
+      </div>
+      <label class="pii-switch-label">
+        <span>Mask PII Data</span>
+        <input type="checkbox" id="togglePiiMask" class="pii-checkbox" checked />
+        <span class="pii-slider"></span>
+      </label>
+    </div>
+
+    <!-- Safety Disclaimer Bar -->
+    <div style="background:rgba(255,123,0,0.06);border:1px solid rgba(255,123,0,0.2);border-radius:var(--radius-md);padding:12px 18px;margin-bottom:1.5rem;font-size:0.82rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+      <div style="color:var(--saffron-light);">
+        ⚠️ <strong>Informational Assistance Only</strong>: Setu AI provides educational breakdown and risk scanning. It does not replace formal legal advice.
+      </div>
+      <button class="btn btn-ghost" style="padding:6px 14px;font-size:0.75rem;" onclick="showHelplineModal()">
+        📞 Emergency Legal Aid Helplines
+      </button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="legal-nav-tabs">
+      <button class="legal-tab-btn active" data-tab="tabSimplify">📄 Simplify & Breakdown</button>
+      <button class="legal-tab-btn" data-tab="tabCompare">⚖️ Side-by-Side Comparison</button>
+      <button class="legal-tab-btn" data-tab="tabRisks">🚩 Risk & Red Flag Scanner</button>
+      <button class="legal-tab-btn" data-tab="tabQA">💬 Document Q&A Assistant</button>
+      <button class="legal-tab-btn" data-tab="tabBrief">💼 Lawyer Brief Generator</button>
+    </div>
+
+    <!-- TAB 1: Simplify & Breakdown -->
+    <div id="tabSimplify" class="tab-content active">
+      <div class="doc-main">
+        <div class="doc-card">
+          <div class="doc-card-title">📋 Input Legal Text</div>
+          <textarea id="legalInputText" class="doc-textarea" placeholder="Paste your contract, rental agreement, SLA, policy, or legal notice here..."></textarea>
+          <div style="display:flex;gap:10px;margin-top:1rem;">
+            <button class="btn btn-primary" id="btnAnalyzeLegal" style="flex:1;justify-content:center;">⚡ Analyze & Simplify Document</button>
+            <button class="btn btn-ghost" onclick="clearLegalInputs()">Clear</button>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-card-title">💡 Plain-Language Breakdown</div>
+          <div id="simplifyOutput" class="doc-output">
+            <div style="text-align:center;padding:3rem 1rem;color:var(--text-muted);">
+              <div style="font-size:2.5rem;margin-bottom:1rem;">⚖️</div>
+              Paste legal text on the left and click <strong>Analyze & Simplify Document</strong> to receive plain language translation, obligations, and jargon definitions.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Side-by-Side Contract Comparison -->
+    <div id="tabCompare" class="tab-content">
+      <div class="comparison-grid">
+        <div class="diff-card">
+          <div class="doc-card-title" style="color:var(--indigo-light);">📄 Document A (Base Version / Old Contract)</div>
+          <textarea id="compareDocA" class="doc-textarea" style="min-height:220px;" placeholder="Paste Document A or baseline agreement here..."></textarea>
+        </div>
+        <div class="diff-card">
+          <div class="doc-card-title" style="color:var(--saffron-light);">📄 Document B (Proposed / New Agreement)</div>
+          <textarea id="compareDocB" class="doc-textarea" style="min-height:220px;" placeholder="Paste Document B or proposed revision here..."></textarea>
+        </div>
+      </div>
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <button class="btn btn-primary" id="btnRunCompare" style="padding:14px 32px;font-size:1rem;">
+          ⚖️ Compare Contracts & Highlight Diff Matrix
+        </button>
+      </div>
+
+      <div id="compareOutput" class="doc-card" style="display:none;">
+        <div class="doc-card-title">🔍 Side-by-Side Comparative Matrix</div>
+        <div id="compareResultBody"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Risk & Red Flag Scanner -->
+    <div id="tabRisks" class="tab-content">
+      <div class="doc-card" style="margin-bottom:1.5rem;">
+        <div class="doc-card-title">🚨 Scan Legal Text for Hazardous Clauses</div>
+        <textarea id="riskInputText" class="doc-textarea" style="min-height:180px;" placeholder="Paste any legal agreement clause to scan for auto-renewals, unilateral penalties, non-competes, or forfeiture traps..."></textarea>
+        <button class="btn btn-primary" id="btnRunRiskScan" style="margin-top:1rem;width:100%;justify-content:center;">
+          🚩 Run Red Flag & Clause Risk Scanner
+        </button>
+      </div>
+
+      <div id="riskOutputContainer" style="display:none;">
+        <div class="risk-meter-box">
+          <div id="riskScoreGauge" class="risk-score-circle">
+            <span id="riskScoreVal">100</span>
+            <span class="risk-score-label">Safety</span>
+          </div>
+          <div>
+            <h3 id="riskTitle" style="font-size:1.2rem;margin-bottom:4px;">Low Risk Profile</h3>
+            <p id="riskSummaryText" style="font-size:0.88rem;color:var(--text-secondary);"></p>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-card-title">⚠️ Identified Risky Clauses & Mitigation Advice</div>
+          <div id="riskFlagsList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Interactive Document Q&A -->
+    <div id="tabQA" class="tab-content">
+      <div class="doc-main">
+        <div class="doc-card">
+          <div class="doc-card-title">📄 Document Context</div>
+          <textarea id="qaDocContext" class="doc-textarea" style="min-height:220px;" placeholder="Paste document context here..."></textarea>
+          
+          <div style="margin-top:1rem;">
+            <div style="font-size:0.85rem;font-weight:600;margin-bottom:6px;color:var(--text-secondary);">Ask a Question:</div>
+            <input type="text" id="qaUserQuestion" style="width:100%;padding:12px;background:var(--bg-glass);border:1px solid var(--border);border-radius:var(--radius-sm);color:#fff;outline:none;" placeholder="e.g. Can I terminate early? What is the late payment fee?" />
+            <button class="btn btn-primary" id="btnAskQA" style="margin-top:10px;width:100%;justify-content:center;">
+              💬 Answer Question with Clause Citation
+            </button>
+          </div>
+        </div>
+
+        <div class="doc-card">
+          <div class="doc-card-title">🤖 Grounded Answer Output</div>
+          <div id="qaOutput" class="doc-output">
+            <div style="text-align:center;padding:3rem 1rem;color:var(--text-muted);">
+              <div style="font-size:2.5rem;margin-bottom:1rem;">💬</div>
+              Enter a document context and ask your specific question to get precise, clause-cited answers.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: Lawyer Consultation Brief Generator -->
+    <div id="tabBrief" class="tab-content">
+      <div class="doc-card" style="margin-bottom:1.5rem;">
+        <div class="doc-card-title">💼 Generate Case Brief for Your Legal Counsel</div>
+        <textarea id="briefInputText" class="doc-textarea" style="min-height:180px;" placeholder="Paste complete document or contract details here..."></textarea>
+        <button class="btn btn-primary" id="btnGenerateBrief" style="margin-top:1rem;width:100%;justify-content:center;">
+          📋 Generate Structured Lawyer Consultation Brief
+        </button>
+      </div>
+
+      <div id="briefOutputWrapper" style="display:none;" class="brief-container">
+        <div class="brief-header">
+          <div>
+            <h2 style="font-size:1.3rem;font-weight:700;" id="briefTitle">Legal Consultation Brief</h2>
+            <div style="font-size:0.8rem;color:var(--text-muted);" id="briefMeta">Prepared by Setu AI</div>
+          </div>
+          <div class="brief-actions">
+            <button class="btn btn-ghost" id="btnCopyBrief" style="padding:8px 16px;font-size:0.8rem;">📋 Copy Brief</button>
+            <button class="btn btn-primary" id="btnDownloadBrief" style="padding:8px 16px;font-size:0.8rem;">💾 Download Brief</button>
+          </div>
+        </div>
+
+        <div id="briefContentBody" style="font-size:0.9rem;line-height:1.75;color:var(--text-secondary);"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Emergency Legal Aid Directory Modal -->
+  <div id="helplineModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);z-index:999;align-items:center;justify-content:center;padding:1rem;">
+    <div class="doc-card" style="max-width:540px;width:100%;border-color:var(--indigo-light);">
+      <div class="doc-card-title" style="justify-content:space-between;">
+        <span>📞 Official Free Legal Aid Directories</span>
+        <button onclick="hideHelplineModal()" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;">✕</button>
+      </div>
+      <div style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:1.25rem;">
+        Under Section 12 of the Legal Services Authorities Act, eligible citizens (women, children, low-income individuals, industrial workers) are entitled to free legal aid representation.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="background:var(--bg-glass);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <strong>National Legal Services Authority (NALSA)</strong><br/>
+          Toll-Free Helpline: <span style="color:var(--saffron);font-weight:700;">15100</span><br/>
+          Website: <a href="https://nalsa.gov.in" target="_blank" style="color:var(--indigo-light);">nalsa.gov.in</a>
+        </div>
+        <div style="background:var(--bg-glass);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <strong>Insurance Ombudsman (IRDAI)</strong><br/>
+          Grievance Helpline: <span style="color:var(--saffron);font-weight:700;">155255</span>
+        </div>
+        <div style="background:var(--bg-glass);padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <strong>National Consumer Helpline</strong><br/>
+          Helpline: <span style="color:var(--saffron);font-weight:700;">1915</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="margin-top:1.25rem;width:100%;justify-content:center;" onclick="hideHelplineModal()">Close</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo"><span class="logo-icon">◈</span><span class="logo-text">Setu <span class="logo-ai">AI Legal</span></span></div>
+      <p class="footer-tagline">Making Legal Information Accessible for Everyone</p>
+      <p class="footer-copy">© 2026 Setu AI · Informational legal assistance only. Always consult a qualified attorney for formal legal matters.</p>
+    </div>
+  </footer>
+
+  <script src="js/security.js"></script>
+  <script src="js/legal.js"></script>
+  <script src="js/legal-ui.js"></script>
+</body>
+</html>

@@ -82,16 +82,73 @@
     "\"I've always been drawn to [field/role] because [genuine reason]. One experience that solidified this was when [story], and the outcome was [result].\""
   ];
 
+  /**
+   * Advanced AI Feedback Scoring Engine v2.0
+   * Evaluates answers across 4 dimensions:
+   *  - Content:    Depth, specificity, use of examples & metrics
+   *  - Clarity:    Sentence variety, vocabulary quality, coherence
+   *  - Confidence: Strong verbs, assertive language, STAR/structured framing
+   *  - Structure:  Logical flow, transitions, opening/closing quality
+   *
+   * Excellent answers (detailed, structured, with examples) can score 95–100.
+   * @param {string} text - The candidate's answer text
+   * @returns {{ contentScore, clarityScore, confidenceScore, structureScore, overall }}
+   */
   function buildFeedback(text) {
     if (!text || typeof text !== 'string') {
       return { contentScore: 0, clarityScore: 0, confidenceScore: 0, structureScore: 0, overall: 0 };
     }
-    const words = text.trim().split(/\s+/).filter(Boolean).length;
-    const lengthScore = Math.min(100, Math.round(30 + (words / 120) * 50));
-    const contentScore = Math.min(100, lengthScore + 10);
-    const clarityScore = Math.min(100, Math.round(65 + Math.min(25, words / 4)));
-    const confidenceScore = Math.min(100, Math.round(60 + Math.min(30, words / 3)));
-    const structureScore = Math.min(100, Math.round(60 + Math.min(25, words / 5)));
+
+    const lower = text.toLowerCase();
+    const words = text.trim().split(/\s+/).filter(Boolean);
+    const wordCount = words.length;
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 3);
+    const sentenceCount = sentences.length;
+
+    /* ── Base from word count (40–75 base) ── */
+    const wordBase = Math.min(75, 40 + Math.round((wordCount / 180) * 35));
+
+    /* ── STAR Method Detection (+0–12 pts) ── */
+    const starKeywords = {
+      situation: /\b(situation|context|background|scenario|when|at the time|was working|was in|faced|encountered)\b/i,
+      task: /\b(task|goal|objective|responsibility|challenge|needed to|had to|my role|was required)\b/i,
+      action: /\b(action|decided|implemented|created|led|built|designed|managed|resolved|took|initiated|worked with|collaborated)\b/i,
+      result: /\b(result|outcome|achieved|improved|reduced|increased|saved|delivered|successfully|as a result|which led to|percent|%|lakhs?|crore)\b/i
+    };
+    const starHits = Object.values(starKeywords).filter(re => re.test(text)).length;
+    const starBonus = starHits * 3; // up to 12
+
+    /* ── Specificity / Metrics (+0–8 pts) ── */
+    const metricsRe = /\b(\d+\s*%|\d+\s*(hours?|days?|weeks?|months?|lakhs?|crores?|people|users?|customers?|members?|points?|percent)|\bfirst\b|\bsecond\b|\bthird\b)\b/gi;
+    const metricsHits = (text.match(metricsRe) || []).length;
+    const metricsBonus = Math.min(8, metricsHits * 2);
+
+    /* ── Strong Verbs & Confident Language (+0–5 pts for confidence) ── */
+    const strongVerbsRe = /\b(led|built|created|designed|launched|achieved|delivered|resolved|initiated|managed|scaled|optimized|implemented|established|mentored|negotiated|collaborated|streamlined)\b/gi;
+    const strongVerbHits = (text.match(strongVerbsRe) || []).length;
+    const strongVerbBonus = Math.min(5, strongVerbHits);
+
+    /* ── Sentence Variety Score (for clarity, +0–5 pts) ── */
+    const avgSentenceLen = sentenceCount > 0 ? wordCount / sentenceCount : wordCount;
+    const varietyBonus = (avgSentenceLen >= 8 && avgSentenceLen <= 22) ? 5 : (avgSentenceLen > 5 ? 3 : 1);
+
+    /* ── Structural Markers (transitions, opening, closing, +0–8 pts) ── */
+    const transitionsRe = /\b(firstly|secondly|thirdly|in addition|furthermore|however|therefore|as a result|for example|for instance|in conclusion|to summarize|additionally|on the other hand|ultimately|importantly)\b/gi;
+    const transitionHits = (text.match(transitionsRe) || []).length;
+    const transitionBonus = Math.min(8, transitionHits * 2);
+
+    /* ── Bilingual Bonus (Hindi/English mix shows authenticity, +3 pts) ── */
+    const devanagariRe = /[\u0900-\u097F]/;
+    const bilingualBonus = devanagariRe.test(text) ? 3 : 0;
+
+    /* ── Dimension Scores ── */
+    const contentScore = Math.min(100, wordBase + starBonus + metricsBonus + bilingualBonus);
+    const clarityScore = Math.min(100, wordBase + varietyBonus + Math.min(5, sentenceCount) + bilingualBonus + 5);
+    const confidenceScore = Math.min(100, wordBase + strongVerbBonus + Math.min(starBonus, 8) + 5);
+    // structureScore has a guaranteed floor of 60 for any answer with > 15 words
+    const structureBase = wordCount > 15 ? Math.max(60, wordBase) : wordBase;
+    const structureScore = Math.min(100, structureBase + transitionBonus + Math.min(starBonus, 6) + 4);
+
     const overall = Math.round((contentScore + clarityScore + confidenceScore + structureScore) / 4);
 
     return { contentScore, clarityScore, confidenceScore, structureScore, overall };
